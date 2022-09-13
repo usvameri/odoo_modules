@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="activity_table">
+        <div class="table_search">
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="page-title mx-4 my-4">
+                                <h1 class="text-primary">
+                                    My Activities
+                                </h1>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="btn-group mx-4 my-4">
+                                <button class="btn btn-lg ml-1 btn-success" id="user_activity_summary"><i class="fa fa-search"/></button>
+                                <button class="btn btn-lg ml-1 btn-danger" id="assigned_by_me_btn"><i class="fa fa-users"/></button>
+                                <button class="btn btn-lg ml-1 btn-danger" id="assigned_to_me_btn"><i class="fa fa-user"/></button>
+                                <button class="btn btn-lg ml-1 btn-info" id="new_activity_btn"><i class="fa fa-plus"/></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                     <div class="row">
+                        <div class="col-6">
+                            <div class="input-group my-4 col-12">
+                                <input class="form-control py-2 border-right-0 border border-warning activity-search-input" type="search" placeholder="Type something..." id="activity-search-input"/>
+                                <span class="input-group-append">
+                                    <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split border border-left-0 border-right-0 rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                     <button class="btn rounded-right border border-left-0 border-right-0 btn-danger trash-button">
+                                        <i class="fa fa-trash"/>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a class="dropdown-item" data-filter="all_activities">All Activities</a>
+                                        <a class="dropdown-item" data-filter="late_activities">Late Activities</a>
+                                        <a class="dropdown-item" data-filter="today_activities">Today Activities</a>
+                                        <a class="dropdown-item" data-filter="future_activities">Future Activities</a>
+                                        <div role="separator" class="dropdown-divider"/>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                             <div class="activity_view_buttons my-4 col-12">
+                                <button class="btn btn-md btn-secondary">
+                                    <i class="fa fa-calendar"/>
+                                </button>
+                                <button class="btn btn-md btn-secondary">
+                                    <i class="fa fa-star"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="table activity_table" id="table">
+          <thead>
+            <tr>
+
+              <th class="border" scope="col">#</th>
+              <th class="border" scope="col">Document</th>
+              <th class="border" scope="col">Type</th>
+              <th class="border assigned-user-col" scope="col">
+
+                  Assigned User
+              </th>
+               <th class="border create-user-col" scope="col">
+
+                  Created User
+              </th>
+<!--              <th scope="col">Activity Type</th>-->
+              <th class="border" scope="col">Summary</th>
+              <th class="border" scope="col">Due Date</th>
+              <th class="border" scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody class="activity_lines">
+
+          </tbody>
+        </table>
+    </t>
+
+    <t t-name="activity_table_lines">
+         <t t-foreach="activities" t-as="act">
+            <tr>
+              <th scope="row" t-esc="act_index +1"/>
+              <td  class="activity_document_name_col">
+                <a class="h4 text-danger activity_document_name_text" t-att-data-model="act.res_model" t-att-data-id="act.res_id" t-esc="act.res_name"/>
+              </td>
+                <td t-esc="_t(act.activity_type_id[1] or act.activity_type_id)" />
+                <td t-esc="act.user_id[1]" />
+              <td t-esc="act.create_user_id[1]" />
+              <t t-if="act.summary != false">
+                  <td t-esc="act.summary"  class="activity_summary_col"/>
+              </t>
+              <t t-else="">
+                  <td/>
+              </t>
+              <t t-if="act.date_deadline &lt; current_date">
+                  <td t-esc="act.date_deadline" class="badge badge-pill badge-danger activity_date_deadline"/>
+              </t>
+              <t t-if="act.date_deadline &gt; current_date">
+                  <td t-esc="act.date_deadline" class="badge badge-pill badge-warning activity_date_deadline"/>
+              </t>
+              <t t-if="act.date_deadline == current_date">
+                  <td t-esc="act.date_deadline" class="badge badge-pill badge-info activity_date_deadline"/>
+              </t>
+              <td class="activity_action_col">
+                  <button class="btn btn-primary details-button" id="details-button" t-attf-data-id="{{act.id}}">
+                      Details
+                  </button>
+                  <button class="btn btn-success done-button" id="done-button"  t-att-data-id="act.id">
+                      Done
+                  </button>
+              </td>
+            </tr>
+        </t>
+    </t>
+
+    <t t-name="activity_quantity_view">
+        <div class="text-right">
+            <span class="badge badge-info" style="font-size:18px" t-esc="activity_qty"/>
+            <span class="badge badge-info" style="font-size:18px" t-esc="done_activity_count"/>
+        </div>
+    </t>
+
+    <t t-name="activity_details">
+
+    </t>
+
+    <t t-name="new_activity_modal_view">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <select class="form-control" id="activity_type_id" placeholder="Type" required="required">
+                        <option value="" disabled="disabled" selected="selected">Select Type</option>
+<!--                            <t t-foreach="widget.model_data.activity_types" t-as="type">-->
+<!--                                <option t-att-value="type.id" t-esc="type.name"/>-->
+<!--                            </t>-->
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <input type="date" class="form-control" id="activity_date" placeholder="Date" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <select class="form-control" id="activity_assigned_user">
+                            <option disabled="disabled" selected="selected">Select Assigned User</option>
+<!--                            <t t-foreach="widget.model_data.activity_users" t-as="user">-->
+<!--                                <option t-att-value="user.id" t-esc="user.name"/>-->
+<!--                            </t>-->
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <select class="form-control" id="activity_res_model" name="activity_res_model">
+                        <option value="" disabled="disabled" selected="selected">Select Record Type</option>
+<!--                            <t t-foreach="widget.model_data.activity_models" t-as="model">-->
+<!--                                <option t-att-value="model.id" t-esc="model.name"/>-->
+<!--                            </t>-->
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="autocomplete">
+                        <input id="activity_res_name" disabled="disabled" type="text" class="form-control" placeholder="Record Name" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <textarea class="form-control" id="activity_summary" placeholder="Summary" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <input id="create_activity_btn" type="button" class="btn btn-success" value="Create"/>
+                    <input id="cancel_btn"  type="button" class="btn btn-danger" data-dismiss="modal" tabindex="-1" value="Cancel"/>
+                </div>
+            </div>
+    </t>
+
+    <t t-name="done_activity_modal_view">
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <textarea class="form-control" id="activity_feedback" placeholder="Feedback" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <input id="done_activity_btn" type="button" class="btn btn-success" value="Done"/>
+                    <input id="cancel_btn"  type="button" class="btn btn-danger" data-dismiss="modal" tabindex="-1" value="Cancel"/>
+                </div>
+            </div>
+    </t>
+
+    <t t-name="table_user_search_input">
+        <input type="text" id="assigned_user_search_input" class="form-control form-control-sm user-search-input"
+                       placeholder="type a name.."/>
+        Assigned User
+    </t>
+    <t t-name="table_create_user_search_input">
+        <input type="text" id="create_user_search_input" class="form-control form-control-sm create-user-search-input"
+                       placeholder="type a name.."/>
+        Created User
+    </t>
+
+    <t t-name="user_activity_count">
+
+         <li class="o_mail_systray_item" >
+            <a id="activity_count_summary" class="dropdown-toggle o-no-caret" data-toggle="dropdown" data-display="static" aria-expanded="false" title="Conversations" href="#" role="button">
+                <i class="fa fa-tasks" role="img" aria-label="Messages"/>
+                <span class="o_notification_counter badge badge-pill"/>
+            </a>
+            <div class="o_mail_systray_dropdown dropdown-menu dropdown-menu-right" role="menu">
+
+                <div class="o_mail_systray_dropdown_items"/>
+            </div>
+        </li>
+    </t>
+
+    <t t-name="user_activity_count_detail">
+         <div class="row mx-4 my-4">
+            <div class="col-6">
+                <i class="text-success fa fa-check"/>
+                <span class="text-success h3">Done: <t t-esc="user_done_activity_count"/></span>
+            </div>
+            <div class="col-6">
+                <i class="text-info fa fa-play"/>
+                <a class="text-info h3 active-activities">Active: <t t-esc="user_active_activity_count"/></a>
+            </div>
+        </div>
+    </t>
+</templates>

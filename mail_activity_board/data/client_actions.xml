@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <record id="my_activities_client_action" model="ir.actions.client">
+            <field name="name">Activities</field>
+            <field name="tag">custom_activity</field>
+     </record>
+
+     <record id="create_activity_client_action" model="ir.actions.client">
+         <field name="name">Create Activity</field>
+         <field name="tag">create_activity_popup</field>
+     </record>
+
+     <record id="done_activity_client_action" model="ir.actions.client">
+          <field name="name">Done Activity</field>
+          <field name="tag">done_activity_popup</field>
+     </record>
+
+</odoo>

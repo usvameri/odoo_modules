@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+        <template id="assets_backend" name="tab assets" inherit_id="web.assets_backend">
+            <xpath expr="//script[last()]" position="after">
+                <link rel="stylesheet" type="text/css" href="/mail_activity_board/static/src/css/custom_activity.css"/>
+                <link rel="stylesheet" type="text/css" href="/mail_activity_board/static/src/css/default_popup.css"/>
+                <script type="text/javascript" src="/mail_activity_board/static/src/js/done_activity_popup.js"/>
+                <script type="text/javascript" src="/mail_activity_board/static/src/js/create_activity_popup.js"/>
+                <script type="text/javascript" src="/mail_activity_board/static/src/js/systray.js"/>
+                <script type="text/javascript" src="/mail_activity_board/static/src/js/user_activity_summary.js"/>
+                <script type="text/javascript" src="/mail_activity_board/static/src/js/activity_dashboard.js"/>
+            </xpath>
+        </template>
+    </data>
+</odoo>

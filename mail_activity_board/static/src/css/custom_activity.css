@@ -1,0 +1,29 @@
+.activity_table th {
+    position: sticky !important;
+    top: 0px;
+    background-color: #fff;
+}
+.activity_summary_col{
+  overflow: hidden;
+  max-width: 75ch;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.activity_document_name_col {
+    display: block;
+    max-width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.activity_document_name_text {
+    white-space: nowrap;
+    width: 135px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.activity_action_col{
+    max-width: 100px;
+}

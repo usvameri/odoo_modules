@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="activity_summary_modal">
+        <div class="topbar">
+            <div class="row">
+                <div class="col-8">
+                    <div class="input-group pb-2">
+                        <div class="autocomplete">
+                            <input class="form-control border-right-0 border border-warning search-input"
+                                   type="search" placeholder="user name..." id="activity-search-input"
+                                   autocomplete="off"/>
+                        </div>
+                        <button class="btn btn-sm btn-info search-btn"><i class="fa fa-search"/></button>
+                        <div class="pl-2">
+                            <button class="btn btn-md btn-info summary-btn"><i class="fa fa-area-chart"/></button>
+                        </div>
+                        <div class="pl-2">
+                            <button class="btn btn-md btn-info users-summary-btn"><i class="fa fa-users"/></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+
+                </div>
+            </div>
+        </div>
+        <div class="content" id="modal_content">
+
+        </div>
+    </t>
+
+    <t t-name="user_activities">
+        <table class="table activity-summary-table" id="activity_summary_table">
+          <thead>
+            <tr>
+              <th class="border" scope="col">#</th>
+              <th class="border" scope="col">Document</th>
+              <th class="border" scope="col">Type</th>
+                <th class="border end-by-user-col" scope="col">End by</th>
+                <th class="border create-user-col" scope="col">
+
+                  Created User
+              </th>
+                <th class="border assigned-user-col" scope="col">
+
+                  Assigned User
+              </th>
+              <th class="border" scope="col">End Date</th>
+            </tr>
+          </thead>
+          <tbody class="activity_summary_lines">
+             <t t-foreach="activities" t-as="act">
+                <tr>
+                      <th scope="row" t-esc="act_index + 1"/>
+                      <td  class="activity_document_name_col">
+                        <t t-if="act.state == 'done'">
+                             <a class="h4 text-success activity_document_name_text" t-esc="act.res_name"/>
+                        </t>
+                          <t t-else="">
+                              <a class="h4 text-info activity_document_name_text" t-esc="act.res_name"/>
+                          </t>
+                      </td>
+                        <td t-esc="act.type" />
+                        <t t-if="act.end_by">
+                            <td t-esc="act.end_by" />
+                        </t>
+                        <t t-else="">
+                            <td />
+                        </t>
+                        <td t-esc="act.creator" />
+                        <td t-esc="act.assigned_user" />
+        <!--              <t t-if="act.summary != false">-->
+        <!--                  <td t-esc="act.summary"  class="activity_summary_col"/>-->
+        <!--              </t>-->
+                      <t t-if="act.date_deadline">
+                          <t t-if="act.date_deadline &lt; today">
+                              <td t-esc="act.date_deadline" class="badge badge-pill badge-danger activity_date_deadline"/>
+                          </t>
+                          <t t-if="act.date_deadline &gt; today">
+                              <td t-esc="act.date_deadline" class="badge badge-pill badge-warning activity_date_deadline"/>
+                          </t>
+                          <t t-if="act.date_deadline == today">
+                              <td t-esc="act.date_deadline" class="badge badge-pill badge-info activity_date_deadline"/>
+                          </t>
+                      </t>
+                      <t t-else="">
+                          <td t-esc="act.end_date" class="badge badge-pill badge-success"/>
+                      </t>
+                    </tr>
+            </t>
+          </tbody>
+        </table>
+    </t>
+
+    <t t-name="users_activity_summaries">
+         <table class="table activity-summary-table" id="activity_summary_table">
+              <thead>
+                <tr>
+                  <th class="border" scope="col">#</th>
+                  <th class="border" scope="col">User</th>
+                  <th class="border" scope="col">Active Activity</th>
+                  <th class="border" scope="col">Done Activity</th>
+                </tr>
+              </thead>
+              <tbody class="activity_summary_lines">
+                    <t t-foreach="users_activity_summaries" t-as="act">
+                        <tr>
+                          <th scope="row" t-esc="act_index +1"/>
+                          <td t-esc="act['user']" />
+                          <td t-esc="act['done_activity_count']" />
+                          <td t-esc="act['active_activity_count']" />
+                        </tr>
+                    </t>
+              </tbody>
+        </table>
+    </t>
+
+</templates>
