@@ -132,7 +132,7 @@ odoo.define('mail_activity_board.custom_activity', function (require) {
        },
        _get_activities_assigned_by_me: function() {
             var self = this;
-            self._get_activities(['create_user_id', '=', self.getSession().uid], false);
+            self._get_activities(['create_uid', '=', self.getSession().uid], false);
        },
        _onKeyupActivitySearchInput: function(event) {
             if(event.keyCode === 13) {
