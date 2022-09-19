@@ -124,6 +124,8 @@ class MailActivity(models.Model):
                 })
                 activity_message.attachment_ids = message_attachments
             messages |= activity_message
+            messages.activity_creator_id = activity.create_uid.id
+
 
         next_activities = self.env['mail.activity'].create(next_activities_values)
         self.unlink()  # will unlink activity, dont access `self` after that
@@ -131,11 +133,11 @@ class MailActivity(models.Model):
         return messages, next_activities
 
     def inbox_message(self):
-        assigned_user, create_user = self.user_id, self.create_user_id
+        assigned_user, create_user = self.user_id, self.create_uid
         if create_user and assigned_user:
 
             """
-            Send user chat notification on activity is done
+            Send inbox message to creator of activity when activity is done
             """
             # create the related document link
             web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -172,7 +174,7 @@ class MailActivity(models.Model):
                 body=new_message_text,
                 author_id=assigned_user.partner_id.id,
                 message_type="comment",
-                subtype="mail.mt_comment",
+                subtype_xmlid="mail.mt_comment",
                 subject=f'Activity Update',
             )
         else:
@@ -189,4 +191,4 @@ class MailActivity(models.Model):
     def search_with_assigned_and_created_user(self, args, assigned_user_name, create_user_name):
         assigned_users = self.env['res.users'].search([('name', 'ilike', assigned_user_name)])
         create_users = self.env['res.users'].search([('name', 'ilike', create_user_name)])
-        return self.search_read([('user_id', 'in', assigned_users.ids),  ('create_user_id', 'in', create_users.ids)])
+        return self.search_read([('user_id', 'in', assigned_users.ids),  ('create_uid', 'in', create_users.ids)])

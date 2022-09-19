@@ -45,7 +45,6 @@ class MailActivity(http.Controller):
             'user_id': int(kwargs.get('assigned_user_id')),
             'date_deadline': kwargs.get('activity_deadline_date'),
             'summary': kwargs.get('activity_summary'),
-            'create_uid': request.env.user.id,
         })
 
         return activity.id

@@ -36,7 +36,7 @@ class ResUsers(models.Model):
             activities.append({
                 'id': activity.id,
                 'res_name': activity.res_name,
-                'creator': activity.create_user_id.name,
+                'creator': activity.create_uid.name,
                 'assigned_user': activity.user_id.name,
                 'date_deadline': activity.date_deadline,
                 'summary': activity.summary,
@@ -50,7 +50,8 @@ class ResUsers(models.Model):
                 'end_date': done_activity.create_date,
                 'date_deadline': '',
                 'creator': done_activity.activity_creator_id.name or '',
-                # when someone ended her activity new message is created so create date is our end date
+                # TODO: Get activity creator from mail.message
+                # new message is created when someone ends their activity, so creation date is our end date
                 'summary': done_activity.body,
                 'type': done_activity.subtype_id.name,
                 'state': 'done',

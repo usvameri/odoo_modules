@@ -21,7 +21,6 @@ odoo.define('mail_activity_board.systray', function (require) {
         },
         start: function () {
             this._super.apply(this, arguments);
-            $("a").css({"cursor":"pointer"});
         },
         _get_user_activity_counts: function () {
             rpc.query({
@@ -29,7 +28,7 @@ odoo.define('mail_activity_board.systray', function (require) {
                 method: 'get_activity_counts',
                 args: [this.user_id],
             }).then(function (result) {
-                self.$('.o_mail_systray_dropdown').html(QWeb.render('user_activity_count_detail', {
+                self.$('.my_activity_count_dropdown').html(QWeb.render('user_activity_count_detail', {
                   user_done_activity_count: result['user_done_activity_count'],
                   user_active_activity_count: result['user_active_activity_count'],
                 }));

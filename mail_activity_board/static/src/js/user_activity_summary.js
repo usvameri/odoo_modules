@@ -10,7 +10,8 @@ odoo.define('user_activity_summary', function (require) {
     var UserActivitySummary = AbstractAction.extend({
         template: 'activity_summary_modal',
         events: {
-            'click button.search-btn': '_onSearchClick',
+//            'click button.search-btn': '_onSearchClick',
+            'keyup input.search-input': '_keyPressUserSearch',
             'click button.summary-btn': '_onSummaryClick',
             'click button.users-summary-btn': '_onUsersSummaryClick',
         },
@@ -59,17 +60,25 @@ odoo.define('user_activity_summary', function (require) {
             var search_input = this.$el.find('div.autocomplete > input');
             this.autocomplete(search_input);
         },
-        _onSearchClick: function (ev) {
+//        _onSearchClick: function (ev) {
+//            var self = this;
+//            self.get_user_activity_summary_list(self.selected_user_id);
+//        },
+        _keyPressUserSearch: function (ev) {
             var self = this;
-            self.get_user_activity_summary_list(self.selected_user_id);
+            if (ev.keyCode === 13) {
+                self.get_user_activity_summary_list(self.selected_user_id);
+            }
         },
         _onSummaryClick: function (ev) {
             this.get_user_activity_summary_list();
             this.clear_search_input();
+            this.$el.find('div.autocomplete').removeAttr('hidden');
         },
         _onUsersSummaryClick: function (ev) {
             this.get_users_activity_summary_list();
             this.clear_search_input();
+            this.$el.find('div.autocomplete').attr('hidden', true);
         },
         clear_search_input: function () {
             var self = this;

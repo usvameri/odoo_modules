@@ -5,6 +5,8 @@ odoo.define('mail_activity_board.CreateActivityPopup', function (require) {
     "use strict";
     var AbstractAction = require('web.AbstractAction');
     var core = require('web.core');
+    var rpc = require('web.rpc');
+    var ajax = require('web.ajax');
     var CreateActivityPopup = AbstractAction.extend({
         template: 'new_activity_modal_view',
         events: {
@@ -19,23 +21,23 @@ odoo.define('mail_activity_board.CreateActivityPopup', function (require) {
         _get_base_activity_data: function() {
             var self = this;
             var result;
-            self._rpc({route: '/mail_activity_board/prepare_new_activity_data'}, {async: false})
-                .then(function(data) {
-                    result = data;
+//            rpc.query({
+//                route: '/mail_activity_board/prepare_new_activity_data'
+//            }).then(function(data) {
+//                    result = data;
+//            }).guardedCatch(function() {
+//                setTimeout(_get_base_activity_data, 1000);
+//            });
+//            TODO: fix this: rpc returning undefined idk why. So using ajax to get data and fill all elements for now
+            ajax.jsonRpc('/mail_activity_board/prepare_new_activity_data', 'call', {}).then(function(data) {
+                self._fill_elements_data(data);
+                result = data;
             });
-            console.log('result: ');
-            console.log(result);
             return result;
         },
         init: function(parent, action) {
             this._super(parent, action);
-            this.model_data = {
-                'activity_models': [],
-                'activity_types': [],
-                'activity_users': [],
-            };
-
-
+            this.model_data = {};
             this.model_records = [];
             this.selected_model_id = false;
             this.selected_record_id = false;
@@ -118,6 +120,30 @@ odoo.define('mail_activity_board.CreateActivityPopup', function (require) {
                 .then(function(data) {
                     self.model_records = data;
             });
+        },
+        _fill_elements_data(data){
+//            set selection values of activity_type_id
+            var activity_type_id = this.$el.find('#activity_type_id');
+            activity_type_id.empty();
+            activity_type_id.append('<option value="" disabled="disabled">Select Activity Type</option>');
+            for (var i = 0; i < data.activity_types.length; i++) {
+                activity_type_id.append('<option value="' + data.activity_types[i]['id'] + '">' + data.activity_types[i]['name'] + '</option>');
+            }
+            var assigned_user_id = this.$el.find('#activity_assigned_user');
+            assigned_user_id.empty();
+            assigned_user_id.append('<option value="" disabled="disabled">Select User</option>');
+            for (var i = 0; i < data.activity_users.length; i++) {
+                assigned_user_id.append('<option value="' + data.activity_users[i]['id'] + '">' + data.activity_users[i]['name'] + '</option>');
+            }
+            var activity_res_model = this.$el.find('#activity_res_model');
+            activity_res_model.empty();
+            activity_res_model.append('<option value="" disabled="disabled">Select Model</option>');
+            for (var i = 0; i < data.activity_models.length; i++) {
+                activity_res_model.append('<option value="' + data.activity_models[i]['id'] + '">' + data.activity_models[i]['name'] + '</option>');
+            }
+
+
+
         },
         //autocomplete for record selection
         autocomplete: function(inp) {

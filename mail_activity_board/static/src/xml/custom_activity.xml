@@ -15,10 +15,10 @@
                         </div>
                         <div class="col-6">
                             <div class="btn-group mx-4 my-4">
-                                <button class="btn btn-lg ml-1 btn-success" id="user_activity_summary"><i class="fa fa-search"/></button>
-                                <button class="btn btn-lg ml-1 btn-danger" id="assigned_by_me_btn"><i class="fa fa-users"/></button>
-                                <button class="btn btn-lg ml-1 btn-danger" id="assigned_to_me_btn"><i class="fa fa-user"/></button>
-                                <button class="btn btn-lg ml-1 btn-info" id="new_activity_btn"><i class="fa fa-plus"/></button>
+                                <button class="btn btn-lg ml-1 btn-warning text-light" id="user_activity_summary" title="Show summary of activities"><i class="fa fa-line-chart"/></button>
+                                <button class="btn btn-lg ml-1 btn-danger" id="assigned_by_me_btn" title="Show activities assigned by me"><i class="fa fa-users"/></button>
+                                <button class="btn btn-lg ml-1 btn-danger" id="assigned_to_me_btn" title="Show activities assigned to me"><i class="fa fa-user"/></button>
+                                <button class="btn btn-lg ml-1 btn-info" id="new_activity_btn" title="Create new activity"><i class="fa fa-plus"/></button>
                             </div>
                         </div>
                     </div>
@@ -27,12 +27,15 @@
                      <div class="row">
                         <div class="col-6">
                             <div class="input-group my-4 col-12">
-                                <input class="form-control py-2 border-right-0 border border-warning activity-search-input" type="search" placeholder="Type something..." id="activity-search-input"/>
+                                <input title="Search activity by document name"
+                                        class="form-control py-2 border-right-0 border border-warning activity-search-input" type="search" placeholder="Type something..." id="activity-search-input"/>
                                 <span class="input-group-append">
-                                    <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split border border-left-0 border-right-0 rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button type="button" title="Open filters menu"
+                                            class="btn btn-info dropdown-toggle dropdown-toggle-split border border-left-0 border-right-0 rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <span class="sr-only">Toggle Dropdown</span>
                                     </button>
-                                     <button class="btn rounded-right border border-left-0 border-right-0 btn-danger trash-button">
+                                     <button title="Clear all filters"
+                                             class="btn rounded-right border border-left-0 border-right-0 btn-danger trash-button">
                                         <i class="fa fa-trash"/>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right">
@@ -95,7 +98,7 @@
               </td>
                 <td t-esc="_t(act.activity_type_id[1] or act.activity_type_id)" />
                 <td t-esc="act.user_id[1]" />
-              <td t-esc="act.create_user_id[1]" />
+              <td t-esc="act.create_uid[1]" />
               <t t-if="act.summary != false">
                   <td t-esc="act.summary"  class="activity_summary_col"/>
               </t>
@@ -213,12 +216,12 @@
 
     <t t-name="user_activity_count">
 
-         <li class="o_mail_systray_item" >
+         <li class="o_mail_systray_item my_activity_count_menu" >
             <a id="activity_count_summary" class="dropdown-toggle o-no-caret" data-toggle="dropdown" data-display="static" aria-expanded="false" title="Conversations" href="#" role="button">
                 <i class="fa fa-tasks" role="img" aria-label="Messages"/>
                 <span class="o_notification_counter badge badge-pill"/>
             </a>
-            <div class="o_mail_systray_dropdown dropdown-menu dropdown-menu-right" role="menu">
+            <div class="o_mail_systray_dropdown dropdown-menu dropdown-menu-right my_activity_count_dropdown" role="menu">
 
                 <div class="o_mail_systray_dropdown_items"/>
             </div>

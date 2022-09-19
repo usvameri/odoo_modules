@@ -8,12 +8,8 @@ odoo.define('mail_activity_board.custom_activity', function (require) {
    const concurrency = require('web.concurrency'); //(DropPrevious)
    var session = require('web.session');
    require('web.dom_ready');
-
    var CustomActivity = AbstractAction.extend({
        template: 'activity_table',
-       custom_events: {
-            reload_default_data: 'load_data',
-       },
        events: {
             'keyup input.activity-search-input': '_onKeyupActivitySearchInput',
             'keypress input#assigned_user_search_input': '_onKeyupAssignedUserSearchInput',
@@ -29,7 +25,6 @@ odoo.define('mail_activity_board.custom_activity', function (require) {
             'click button#assigned_to_me_btn': '_onClickAssignedToMeBtn',
             'click a.activity_document_name_text': '_onClickDocumentName',
 //            'dblclick a.activity_document_name_text': '_onDoubleClickDocumentName',
-
        },
        date_object: new Date(),
        today: new Date().toJSON().slice(0,10).replace(/-/g,'-'),
@@ -69,33 +64,18 @@ odoo.define('mail_activity_board.custom_activity', function (require) {
                   activity_qty: datas.length,
                   done_activity_count: session.user_context.done_activity_count,
             }));
+            self.$el.parents('.o_action_manager').css('overflow', 'auto'); //to show scroll bar
 
        },
+       //TODO: [usvameria] doesn't catch the data from the controller fix it (undefined)
        _get_base_activity_data: function() {
             var self = this;
             var result;
             self._rpc({route: '/mail_activity_board/prepare_new_activity_data'}, {async: false})
                 .then(function(data) {
-                    result = data;
+                    result = data; //data is undefined
             });
             return result;
-       },
-       _render_new_activity_modal: function() {
-             var self = this;
-             var modal = self.$('.new_activity_modal');
-             var model_data = this._get_base_activity_data();
-             if(modal && modal.length > 0) {
-                modal.remove();
-                $('body').append(QWeb.render('new_activity_modal_view', {
-                    model_data: model_data,
-                }));
-             }
-             else {
-                $('body').append(QWeb.render('new_activity_modal_view', {
-                    model_data: model_data,
-                }));
-             }
-             $('.new_activity_modal').modal('show');
        },
        _get_activities: function (domain , default_user_domain=true) {
           var self = this;
@@ -131,7 +111,6 @@ odoo.define('mail_activity_board.custom_activity', function (require) {
             }
        },
        load_data: function () {
-            console.log('load_data');
             var self = this;
             self._get_activities(false);
        },
@@ -180,7 +159,7 @@ odoo.define('mail_activity_board.custom_activity', function (require) {
                     self._get_activities_by_assigned_and_created_user(assigned_user, event.target.value);
                 }
                 else{
-                    self._get_activities(['create_user_id', 'ilike', event.target.value], false);
+                    self._get_activities(['create_uid', 'ilike', event.target.value], false);
                 }
             }
        },
@@ -207,7 +186,7 @@ odoo.define('mail_activity_board.custom_activity', function (require) {
                     if (node.className === 'modal-backdrop') {
                     // console.log('before disconnected')
                     x.disconnect();
-                    self.load_data();
+//                    self.load_data();
                     };
 
                 });
@@ -246,10 +225,6 @@ odoo.define('mail_activity_board.custom_activity', function (require) {
             this.$('input.activity-search-input').val('');
             this.$('input.user-search-input').val('');
        },
-       _onChangeModelSelection: function(event) {
-            var self = this;
-            var model = event.target.value;
-       },
        _onClickCreateNewActivity: function(event) {
             var self = this;
             self.do_action({
@@ -278,7 +253,6 @@ odoo.define('mail_activity_board.custom_activity', function (require) {
        },
        _onClickAssignedToMeBtn: function(event) {
             var self = this;
-            console.log('assigned to me');
             self._get_my_activities();
        },
        _onClickDocumentName: function(event) {
@@ -314,6 +288,7 @@ odoo.define('mail_activity_board.custom_activity', function (require) {
 //                });
             };
        },
+       //not for now
        _onDoubleClickDocumentName: function(event) {
             var self = this;
             if (event.target.dataset.id && event.target.dataset.model) {
@@ -327,6 +302,7 @@ odoo.define('mail_activity_board.custom_activity', function (require) {
                 });
             };
        },
+       //Green search button on the header to see activity counts
        _onClickUserActivitySummary: function(event) {
             var self = this;
             self.do_action({
