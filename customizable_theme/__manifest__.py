@@ -3,6 +3,7 @@
     'version': '12.0',
     'category': '',
     'author': "usvameria",
+    'website': 'github.com/usvameri',
     'summary': '',
     'description': """
        test
